@@ -1,0 +1,223 @@
+{
+  "metadata": {
+    "schemaVersion": "1.0",
+    "importType": "LEX",
+    "importFormat": "JSON"
+  },
+  "resource": {
+    "name": "MedicalHelp",
+    "version": "2",
+    "intents": [
+      {
+        "name": "CancelBot",
+        "version": "1",
+        "fulfillmentActivity": {
+          "type": "ReturnIntent"
+        },
+        "sampleUtterances": [],
+        "slots": [],
+        "parentIntentSignature": "AMAZON.CancelIntent"
+      },
+      {
+        "name": "FindDoctor",
+        "version": "12",
+        "fulfillmentActivity": {
+          "type": "CodeHook",
+          "codeHook": {
+            "uri": "arn:aws:lambda:us-east-1:272353489647:function:FindADoctor",
+            "messageVersion": "1.0"
+          }
+        },
+        "sampleUtterances": [
+          "I need a doctor",
+          "Find me a {Language}",
+          "I need a doctor who speaks {Language}",
+          "Find me a {Language} speaking {Specialty}",
+          "I need a doctor in {City}",
+          "I need a {Specialty}"
+        ],
+        "slots": [
+          {
+            "name": "City",
+            "slotConstraint": "Required",
+            "slotType": "AMAZON.US_CITY",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "In what city do you wish to see the doctor"
+                }
+              ],
+              "maxAttempts": 2,
+              "responseCard": "{\"version\":1,\"contentType\":\"application/vnd.amazonaws.card.generic\"}"
+            },
+            "priority": 2,
+            "sampleUtterances": [
+              "near {City}"
+            ]
+          },
+          {
+            "name": "Degree",
+            "slotConstraint": "Required",
+            "slotType": "MedicalDegrees",
+            "slotTypeVersion": "1",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What type of degree do you wish?"
+                },
+                {
+                  "contentType": "PlainText",
+                  "content": "What medical degree do you wish you doctor to have?"
+                }
+              ],
+              "maxAttempts": 3,
+              "responseCard": "{\"version\":1,\"contentType\":\"application/vnd.amazonaws.card.generic\",\"genericAttachments\":[]}"
+            },
+            "priority": 6,
+            "sampleUtterances": [
+              "I would like my doctor to be a {Degree}"
+            ]
+          },
+          {
+            "name": "Insurance",
+            "slotConstraint": "Required",
+            "slotType": "HealthcareInsurance",
+            "slotTypeVersion": "1",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What Insurance do you have?"
+                }
+              ],
+              "maxAttempts": 2
+            },
+            "priority": 4,
+            "sampleUtterances": []
+          },
+          {
+            "name": "Language",
+            "slotConstraint": "Optional",
+            "slotType": "AMAZON.Language",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What language do you wish to speak to the doctor in?"
+                }
+              ],
+              "maxAttempts": 2
+            },
+            "priority": 5,
+            "sampleUtterances": []
+          },
+          {
+            "name": "Specialty",
+            "slotConstraint": "Required",
+            "slotType": "DoctorSpecialties",
+            "slotTypeVersion": "1",
+            "valueElicitationPrompt": {
+              "messages": [
+                {
+                  "contentType": "PlainText",
+                  "content": "What kind of a doctor do you need?"
+                }
+              ],
+              "maxAttempts": 2
+            },
+            "priority": 3,
+            "sampleUtterances": []
+          }
+        ]
+      }
+    ],
+    "slotTypes": [
+      {
+        "name": "HealthcareInsurance",
+        "version": "1",
+        "enumerationValues": [
+          {
+            "value": "Best Care",
+            "synonyms": []
+          },
+          {
+            "value": "Discount Health",
+            "synonyms": []
+          },
+          {
+            "value": "Happy Healthcare",
+            "synonyms": []
+          }
+        ],
+        "valueSelectionStrategy": "ORIGINAL_VALUE"
+      },
+      {
+        "name": "DoctorSpecialties",
+        "version": "1",
+        "enumerationValues": [
+          {
+            "value": "Neurologist",
+            "synonyms": []
+          },
+          {
+            "value": "Pediatrician",
+            "synonyms": []
+          },
+          {
+            "value": "Orthopedic",
+            "synonyms": []
+          }
+        ],
+        "valueSelectionStrategy": "ORIGINAL_VALUE"
+      },
+      {
+        "name": "MedicalDegrees",
+        "version": "1",
+        "enumerationValues": [
+          {
+            "value": "Physicians Assistant",
+            "synonyms": [
+              "PA"
+            ]
+          },
+          {
+            "value": "Medical Doctor",
+            "synonyms": [
+              "MD"
+            ]
+          },
+          {
+            "value": "Nurse Practitioner",
+            "synonyms": [
+              "NP"
+            ]
+          }
+        ],
+        "valueSelectionStrategy": "TOP_RESOLUTION"
+      }
+    ],
+    "voiceId": "Joanna",
+    "childDirected": false,
+    "locale": "en-US",
+    "idleSessionTTLInSeconds": 300,
+    "clarificationPrompt": {
+      "messages": [
+        {
+          "contentType": "PlainText",
+          "content": "Sorry, can you please repeat that?"
+        }
+      ],
+      "maxAttempts": 5
+    },
+    "abortStatement": {
+      "messages": [
+        {
+          "contentType": "PlainText",
+          "content": "Sorry, I could not understand. Goodbye."
+        }
+      ]
+    }
+  }
+}
